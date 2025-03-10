@@ -205,31 +205,106 @@ router.get("/emailverify/:token",async(req,res)=>{
     }
 });
 
-router.post("/ressetpassword",async(req,res)=>{
+router.post("/resetpassword", async (req, res) => {
+  try {
+    const { email } = req.body;
+    console.log(email);
+
+    // ✅ Check if user exists
+    const user = await userModel.findOne({ email });
+    if (!user) {
+      return res
+        .status(409)
+        .json({ message: "User not found. Please register." });
+    }
+
+    // ✅ Generate a secure random password
+    let newPassword = Math.random().toString(36).slice(-8);
+    console.log("Generated Password:", newPassword);
+
+    // ✅ Hash the new password
+    const hashedPassword = await bcrypt.hash(newPassword, 10);
+
+    // ✅ Update user password in database
+    user.password = hashedPassword;
+    await user.save();
+
+    console.log("Updated User:", user);
+
+    // ✅ Send password reset email
+    let emailData = {
+      to: email,
+      subject: "🔒 Password Reset Request",
+      html: `
+                <div style="font-family: Arial, sans-serif; max-width: 500px; margin: auto; padding: 20px; border: 1px solid #ddd; border-radius: 10px; background-color: #f9f9f9;">
+                    <h2 style="color: #333; text-align: center;">🔑 Password Reset</h2>
+                    <p style="color: #555; font-size: 16px;">Hello,</p>
+                    <p style="color: #555; font-size: 16px;">You requested a password reset. Use the new password below to log in:</p>
+                    <div style="text-align: center; padding: 15px; background-color: #007bff; color: #fff; font-size: 18px; font-weight: bold; border-radius: 5px;">
+                        ${newPassword}
+                    </div>
+                    <p style="color: #555; font-size: 16px;">For security reasons, we recommend changing this password after logging in.</p>
+                    <hr style="border: none; height: 1px; background-color: #ddd;">
+                    <p style="color: #777; font-size: 14px; text-align: center;">If you didn’t request this, please ignore this email.</p>
+                    <p style="color: #777; font-size: 14px; text-align: center;">© 2025 YourCompany. All rights reserved.</p>
+                </div>
+            `,
+    };
+
+    await sendEmail(emailData);
+
+    return res
+      .status(200)
+      .json({ message: "New password sent to your email." });
+  } catch (error) {
+    console.log(error);
+    res.status(500).json({ message: error.message });
+  }
+});
+
+// ✅ Forgot Password - Request Reset Link
+router.post("/forgotpassword", async (req, res) => {
     try {
-        const {email} = req.body;
-        console.log(email);
-        if(!email){
-            return res.status(409).json({message:"user not found please register."})
+        const { email } = req.body;
+
+        // ✅ Check if user exists
+        const user = await userModel.findOne({ email });
+        if (!user) {
+            return res.status(404).json({ message: "User not found." });
         }
-        let newPassword = Math.random().toString(30).split(-8);
-        console.log(newPassword);
 
-        const harshPassword = bcrypt.hash(newPassword,10);
-        console.log(harshPassword);
-        user.password = harshPassword;
-        console.log(password);
-        user.save();
+        // ✅ Generate Password Reset Token (expires in 15 minutes)
+        const resetToken = jwt.sign({ id: user._id }, JWT_SECRET, { expiresIn: "1h" });
 
-        console.log(user);
+        // ✅ Save token to user document
+        user.userVerifiedToken.email = resetToken;
+        await user.save();
 
-        let emailData = {
-            
-        }
+        // ✅ Send Password Reset Email
+        await sendEmail({
+            to: email,
+            subject: "🔒 Password Reset Request",
+            html: `
+                <div style="font-family: Arial, sans-serif; max-width: 500px; margin: auto; padding: 20px; border: 1px solid #ddd; border-radius: 10px; background-color: #f9f9f9;">
+                    <h2 style="color: #333; text-align: center;">🔑 Reset Your Password</h2>
+                    <p style="color: #555; font-size: 16px;">Click the button below to reset your password:</p>
+                    <div style="text-align: center;">
+                        <a href="${URL}/resetpassword/${resetToken}" style="padding: 12px 20px; background-color: #007bff; color: #fff; text-decoration: none; font-size: 16px; border-radius: 5px;">
+                            Reset Password
+                        </a>
+                    </div>
+                    <p style="color: #777; font-size: 14px; text-align: center;">If you didn’t request this, please ignore this email.</p>
+                </div>
+            `,
+        });
+
+        return res.status(200).json({ message: "Password reset link sent to email." });
+
     } catch (error) {
         console.log(error);
-        res.status(500).json({message:error})
+        res.status(500).json({ message: error.message });
     }
-})
+});
+
 
 export default router;

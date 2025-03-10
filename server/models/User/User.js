@@ -34,13 +34,16 @@ const userSchema = new mongoose.Schema(
       email: {
         type: String,
       },
+      resetPassword: {
+        type: String, // Stores the JWT token for password reset
+      },
     },
   },
   {
-    timestamps: true,
+    timestamps: true, 
   }
 );
 
-const userModel = mongoose.model("user",userSchema,"user");
+const userModel = mongoose.model("user", userSchema, "user");
 
 export default userModel;

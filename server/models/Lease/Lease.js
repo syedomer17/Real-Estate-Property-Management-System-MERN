@@ -21,6 +21,6 @@ const leaseSchema = new mongoose.Schema({
     timestamps: true
 });
 
-leaseModel = mongoose.model("lease", leaseSchema, "lease");
+const leaseModel = new mongoose.model("lease", leaseSchema, "lease");
 
 export default leaseModel;
