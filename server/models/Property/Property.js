@@ -2,9 +2,9 @@ import mongoose from "mongoose";
 
 const propertySchema = new mongoose.Schema(
   {
-    name: {
+    propertyName: {
       type: String,
-      required: true,
+      required: true, // means : house, apartment
     },
     address: {
       type: String,
@@ -12,10 +12,6 @@ const propertySchema = new mongoose.Schema(
     },
     price: {
       type: String,
-      required: true,
-    },
-    type: {
-      type: String, // means : house, apartment
       required: true,
     },
     bhk: {
@@ -29,7 +25,13 @@ const propertySchema = new mongoose.Schema(
       required: true,
     },
     createdAt: {
-      type: Date,
+      type: String,
+    },
+    status: {
+      type: String,
+      enum: ["Available", "Sold", "Pending"],
+      default: "Available",
+      required: true,
     },
     owner: {
       type: mongoose.Schema.Types.ObjectId,

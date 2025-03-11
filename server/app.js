@@ -37,7 +37,7 @@ app.use(globalLimiter);
 app.use("/api/public", publicRouter);
 
 // Middleware for authentication
-app.use(authMiddleware);
+// app.use(authMiddleware);
 
 // Private routers
 app.use("/api/private/user", userRouter);

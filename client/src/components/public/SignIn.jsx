@@ -45,7 +45,10 @@ const SignIn = () => {
       if (token) localStorage.setItem("token", token);
 
       toast.success("Sign in successfully");
-    //   navigate("/dashboard");
+      setTimeout(() => {
+        navigate("/dashboard");
+      }, 2000);
+      
     } catch (error) {
       toast.error(error.response?.data?.message || "Sign in failed.");
     } finally {

@@ -160,7 +160,7 @@ router.post("/signin", async (req, res) => {
       return res.status(401).json({ message: "Incorrect password." });
     }
 
-    const token = jwt.sign({ id: user._id }, JWT_SECRET, { expiresIn: "1h" });
+    const token = jwt.sign({ id: user._id }, JWT_SECRET, { expiresIn: "100d" });
     res.status(200).json({
       message: "User logged in successfully.",
       token,
