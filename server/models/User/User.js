@@ -19,9 +19,12 @@ const userSchema = new mongoose.Schema(
       type: String,
       required: true,
     },
+    phone:{
+      type : String,
+    },
     role: {
       type: String,
-      enum: ["admin", "manager", "tenant", "buyer", "seller"],
+      enum: ["admin", "tenant", "buyer", "seller"],
       default: "buyer",
     },
     userVerified: {
