@@ -1,8 +1,10 @@
 import { useEffect } from "react";
 import { gsap } from "gsap";
 import { motion } from "framer-motion";
+import { useNavigate } from "react-router-dom";
 
 const Welcome = () => {
+  const navigate = useNavigate();
   useEffect(() => {
     gsap.fromTo(
       ".cta-button",
@@ -44,6 +46,7 @@ const Welcome = () => {
         <motion.button
           whileHover={{ scale: 1.1 }}
           whileTap={{ scale: 0.95 }}
+          onClick={() => navigate("/signup")}
           className="cta-button px-10 py-4 bg-yellow-400 text-gray-900 font-bold rounded-full text-xl shadow-lg transition-all hover:bg-yellow-300 hover:shadow-2xl"
         >
           Get Started
