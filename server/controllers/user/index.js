@@ -3,74 +3,73 @@ import userModel from "../../models/User/User.js";
 
 const router = express.Router();
 
-//get all user 
-router.get("/getall",async(req,res)=>{
-    try {
-        const user = await userModel.find();
-        res.json(user);
-    } catch (error) {
-        console.log(error);
-        res.status(500).json({message:error})
-    }
-})
+// Get all users
+router.get("/getall", async (req, res) => {
+  try {
+    const users = await userModel.find();
+    res.json(users);
+    console.log(users);
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: error.message });
+  }
+});
 
-//get by id
-router.get("/getbyid/:id",async(req,res)=>{
-    try {
-        const id = req.params.id
-        const user = await userModel.findById(id)
-        if(!user){
-            return res.status(404).json({message:"user not found"});
-        }
-        res.json(user)
-    } catch (error) {
-        console.log(error);
-        res.status(500).json({message:error})
+// Get user by ID
+router.get("/getbyid/:id", async (req, res) => {
+  try {
+    const user = await userModel.findById(req.params.id);
+    if (!user) {
+      return res.status(404).json({ message: "User not found" });
     }
-})
+    res.json(user);
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: error.message });
+  }
+});
 
-//Delete all users
-router.delete("/deleteall",async(req,res)=>{
-    try {
-        await userModel.deleteMany();
-        res.json({message:"All user are deleted successfully."})
-    } catch (error) {
-        console.log(error);
-        res.status(500).json({message:error})
-    }
-})
+// Delete all users
+router.delete("/deleteall", async (req, res) => {
+  try {
+    await userModel.deleteMany();
+    res.json({ message: "All users deleted successfully." });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: error.message });
+  }
+});
 
-// delete by id 
-router.delete("/deletebyid/:id",async(req,res)=>{
-    try {
-        let id = req.params.id
-        const user = await userModel.findByIdAndDelete(id)
-        if(!user){
-            return res.status(404).json({message:"user not found."});
-        }
-        res.json({message:"user deleted successfully."})
-    } catch (error) {
-        console.log(error);
-        res.json({message:error})
+// Delete user by ID
+router.delete("/deletebyid/:id", async (req, res) => {
+  try {
+    const user = await userModel.findByIdAndDelete(req.params.id);
+    if (!user) {
+      return res.status(404).json({ message: "User not found." });
     }
-})
+    res.json({ message: "User deleted successfully." });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: error.message });
+  }
+});
 
-//edit by id
-router.put("/editbyid/:id",async(req,res)=>{
-    try {
-        const editUser = await userModel.findByIdAndUpdate(
-            req.params.id,
-            req.body,
-            {new: true}
-        );
-        if(!editUser){
-            return res.status(404).json({message:"user not found."})
-        }
-        res.json(editUser)
-    } catch (error) {
-        console.log(error);
-        res.status(500).json({message:error})
+// Edit user by ID
+router.put("/editbyid/:id", async (req, res) => {
+  try {
+    const updatedUser = await userModel.findByIdAndUpdate(
+      req.params.id,
+      req.body,
+      { new: true }
+    );
+    if (!updatedUser) {
+      return res.status(404).json({ message: "User not found." });
     }
-})
+    res.json(updatedUser);
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: error.message });
+  }
+});
 
 export default router;
