@@ -105,4 +105,4 @@ server/
 This project is licensed under the MIT License.
 
 ## Author
-- **syedomer17** - [Your GitHub](https://github.com/syedomer17)
+- **syedomer17** - [GitHub](https://github.com/syedomer17)
