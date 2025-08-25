@@ -1,7 +1,8 @@
 import React from "react";
 import { useNavigate } from "react-router-dom";
-import Getall from "./user/Getall";
-import GetById from "./user/GetById";
+import PropertyManagement from "./Property/PropertyManagement";
+// import Getall from "./user/Getall";
+// import GetById from "./user/GetById";
 
 const Dashboard = () => {
   const navigate = useNavigate();
@@ -23,8 +24,9 @@ const Dashboard = () => {
           Logout
         </button>
       </div>
-      <Getall />
-      <GetById />
+      {/* <Getall />
+      <GetById /> */}
+      <PropertyManagement />
     </div>
   );
 };
